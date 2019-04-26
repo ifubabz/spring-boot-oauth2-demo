@@ -19,7 +19,7 @@ public abstract class SocialUserDetails extends User implements SocialUser {
     }
 
     protected SocialUserDetails(Map<String, Object> attributes, String nameKey) {
-        super(String.valueOf(attributes.get(nameKey)), null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+        super(String.valueOf(attributes.get(nameKey)), String.valueOf(attributes.get(nameKey)),  Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
         this.attributes = attributes;
     }
 
