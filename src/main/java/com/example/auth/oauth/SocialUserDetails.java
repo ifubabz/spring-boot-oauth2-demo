@@ -3,16 +3,16 @@ package com.example.auth.oauth;
 import lombok.ToString;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collections;
 import java.util.Map;
 
 @ToString
-public abstract class SocialUserDetails extends User implements SocialUser {
+public abstract class SocialUserDetails extends User implements OAuth2User {
 
     protected Map<String, Object> attributes;
     protected static final String NAME_ATTR_KEY = "email";
-
 
     protected SocialUserDetails(Map<String, Object> attributes){
         this(attributes, NAME_ATTR_KEY);

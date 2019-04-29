@@ -1,5 +1,6 @@
 package com.example.auth.security;
 
+import com.example.auth.account.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -25,6 +27,9 @@ public class TokenAuthenticationRequestFilter extends OncePerRequestFilter {
     @Autowired
     JwtTokenService jwtTokenService;
 
+    @Autowired
+    AccountService accountService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.debug("doFilterInternal:{}", request);
@@ -34,8 +39,10 @@ public class TokenAuthenticationRequestFilter extends OncePerRequestFilter {
             String bearerToken = authorization.substring(7);
             log.debug("doFilterInternal:bearerToken:{}", bearerToken);
             String email = jwtTokenService.getEmail(bearerToken);
-            UserDetails userDetails = new User(email, null, Collections.singletonList(new SimpleGrantedAuthority("USER_ROLE")));
-            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            log.debug("doFilterInternal:email:{}", email);
+            UserDetails userDetails = accountService.loadUserByUsername(email);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

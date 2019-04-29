@@ -4,6 +4,7 @@ import com.example.auth.security.JwtTokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -24,9 +25,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String redirectUri = OAuthCookieUtils.getRedirectUri(request);
         String token = jwtTokenService.createToken(authentication);
         String targetUrl = UriComponentsBuilder.fromUriString(redirectUri)
-                .queryParam("token", token).build()
+                .queryParam("token", token)
+                .build()
                 .toUriString();
-
+        log.debug("onAuthenticationSuccess:targetUrl:{}", targetUrl);
         if (response.isCommitted()) {
             log.debug("Response has been committed. Unable to redirect:{}", targetUrl);
             return;
@@ -34,6 +36,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         super.clearAuthenticationAttributes(request);
         OAuthCookieUtils.removeOAuth2AuthorizationRequest(request, response);
+        log.debug("onAuthenticationSuccess:request:{}", request);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }
