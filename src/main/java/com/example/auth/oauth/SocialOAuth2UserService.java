@@ -39,13 +39,13 @@ public class SocialOAuth2UserService extends DefaultOAuth2UserService {
         Account account = null;
         if(accountOptional.isPresent()){
             account = accountOptional.get();
-            account.setName(socialUserDetails.getUsername());
+            account.setName(socialUserDetails.getName());
             account.setProvider(provider);
             account.setImageUrl(socialUserDetails.getImageUrl());
             account.setSubject(socialUserDetails.getSubject());
         }else{
             account = Account.builder()
-                    .name(socialUserDetails.getUsername())
+                    .name(socialUserDetails.getName())
                     .email(socialUserDetails.getEmail())
                     .provider(provider)
                     .subject(socialUserDetails.getSubject())

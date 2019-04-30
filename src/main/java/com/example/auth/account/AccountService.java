@@ -1,5 +1,6 @@
 package com.example.auth.account;
 
+import com.example.auth.oauth.user.SocialUserDetails;
 import com.example.auth.oauth.user.SocialUserFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -25,7 +26,7 @@ public class AccountService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("loadUserByUsername:username:{}", username);
         Optional<Account> accountOptional = accountRepository.findByEmail(username);
-        UserDetails userDetails = null;
+        SocialUserDetails userDetails = null;
         if(accountOptional.isPresent()){
             Account account = accountOptional.get();
             log.debug("loadUserByUsername:Account:{}", account);

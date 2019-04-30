@@ -37,7 +37,7 @@ public class JwtTokenService {
 
         JWTClaimsSet jwtClaims = new JWTClaimsSet.Builder()
                 .claim("subject", socialUserDetails.getSubject())
-                .claim("name", socialUserDetails.getUsername())
+                .claim("name", socialUserDetails.getName())
                 .claim("email", socialUserDetails.getEmail())
                 .issuer("example")
                 .issueTime(issueTime)

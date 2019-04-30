@@ -15,9 +15,6 @@ public class FacebookUserDetails extends SocialUserDetails {
 
     @Override
     public String getImageUrl() {
-        if(attributes.containsKey("imageUrl")){
-            return this.getAttributeAsString("imageUrl");
-        }
         if(attributes.containsKey("picture")) {
             Map<String, Object> pictureObj = (Map<String, Object>) attributes.get("picture");
             if(pictureObj.containsKey("data")) {

@@ -19,6 +19,8 @@ public class SocialUserFactory {
             socialUserDetails = new FacebookUserDetails(attributes);
         }else if(SocialOAuthProvider.GOOGLE.name().equalsIgnoreCase(registrationId)){
             socialUserDetails = new GoogleUserDetails(attributes);
+        }else if(SocialOAuthProvider.KAKAO.name().equalsIgnoreCase(registrationId)){
+            socialUserDetails = new KakaoUserDetails(attributes);
         }else{
             throw new RuntimeException(String.format("Unsupported Registration ID:{}", registrationId));
         }

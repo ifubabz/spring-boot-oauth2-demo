@@ -44,11 +44,26 @@ spring:
             scope:
               - email
               - profile
+          kakao:
+            clientId:
+            clientSecret:
+            redirectUriTemplate: "{baseUrl}/login/callback/{registrationId}"
+            authorizationGrantType: authorization_code
+            response_type: code
+            clientAuthenticationMethod: post
+            scope:
+              - account_email
+              - profile
         provider:
           facebook:
             authorizationUri: https://www.facebook.com/dialog/oauth
             tokenUri: https://graph.facebook.com/oauth/access_token
             userInfoUri: https://graph.facebook.com/me?fields=id,name,email,picture{url}
+          kakao:
+            authorizationUri: https://kauth.kakao.com/oauth/authorize
+            tokenUri: https://kauth.kakao.com/oauth/token
+            userInfoUri: https://kapi.kakao.com/v2/user/me
+            userNameAttribute: id
 
 logging.level:
   root: info

@@ -1,7 +1,9 @@
 package com.example.auth.security;
 
+import com.example.auth.account.AccountDto;
 import com.example.auth.account.AccountService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,6 +32,9 @@ public class TokenAuthenticationRequestFilter extends OncePerRequestFilter {
     @Autowired
     AccountService accountService;
 
+    @Autowired
+    ModelMapper modelMapper;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.debug("doFilterInternal:{}", request);
@@ -40,8 +45,9 @@ public class TokenAuthenticationRequestFilter extends OncePerRequestFilter {
             log.debug("doFilterInternal:bearerToken:existed");
             String email = jwtTokenService.getEmail(bearerToken);
             log.debug("doFilterInternal:email:{}", email);
-            UserDetails userDetails = accountService.loadUserByUsername(email);
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            AccountDto.Response account = accountService.getUserByEmail(email);
+            AccountDto.Principal principal = modelMapper.map(account, AccountDto.Principal.class);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principal, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
