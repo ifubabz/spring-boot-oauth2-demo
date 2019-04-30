@@ -42,11 +42,13 @@ public class SocialOAuth2UserService extends DefaultOAuth2UserService {
             account.setName(socialUserDetails.getUsername());
             account.setProvider(provider);
             account.setImageUrl(socialUserDetails.getImageUrl());
+            account.setSubject(socialUserDetails.getSubject());
         }else{
             account = Account.builder()
                     .name(socialUserDetails.getUsername())
                     .email(socialUserDetails.getEmail())
                     .provider(provider)
+                    .subject(socialUserDetails.getSubject())
                     .imageUrl(socialUserDetails.getImageUrl())
                     .build();
         }

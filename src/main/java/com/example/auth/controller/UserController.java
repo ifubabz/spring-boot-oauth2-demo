@@ -1,5 +1,6 @@
 package com.example.auth.controller;
 
+import com.example.auth.account.AccountDto;
 import com.example.auth.account.AccountService;
 import com.example.auth.oauth.CurrentUser;
 import com.example.auth.oauth.user.SocialUserDetails;
@@ -18,7 +19,7 @@ public class UserController {
 
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
-    public SocialUserDetails getCurrentUser(@CurrentUser SocialUserDetails socialUser) {
+    public AccountDto.Response getCurrentUser(@CurrentUser SocialUserDetails socialUser) {
         log.debug("getCurrentUser:socialUser:{}", socialUser);
         return accountService.getUserByEmail(socialUser.getEmail());
     }

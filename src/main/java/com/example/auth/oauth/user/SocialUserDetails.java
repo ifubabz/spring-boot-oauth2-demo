@@ -22,6 +22,10 @@ public abstract class SocialUserDetails extends User implements SocialUser {
         this.attributes = attributes;
     }
 
+    protected String getAttributeAsString(String name){
+        return String.valueOf(this.attributes.getOrDefault(name, ""));
+    }
+
     @Override
     public Map<String, Object> getAttributes() {
         return this.attributes;
@@ -29,11 +33,16 @@ public abstract class SocialUserDetails extends User implements SocialUser {
 
     @Override
     public String getName() {
-        return getAttributeAsString(NAME_ATTR_KEY);
+        return this.getAttributeAsString(NAME_ATTR_KEY);
     }
 
-    protected String getAttributeAsString(String name){
-        return String.valueOf(this.attributes.getOrDefault(name, ""));
+    @Override
+    public String getEmail() {
+        return this.getAttributeAsString("email");
     }
 
+    @Override
+    public String getImageUrl() {
+        return this.getAttributeAsString("imageUrl");
+    }
 }

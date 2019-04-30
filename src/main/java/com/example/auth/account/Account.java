@@ -43,13 +43,16 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private SocialOAuthProvider provider;
 
+    private String subject;
+
     private String imageUrl;
 
     @Builder
-    public Account(String name, String email, SocialOAuthProvider provider, String imageUrl){
+    public Account(String name, String email, SocialOAuthProvider provider, String subject, String imageUrl){
         this.name = name;
         this.email = email;
         this.provider = provider;
+        this.subject = subject;
         this.imageUrl = imageUrl;
     }
 }

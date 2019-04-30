@@ -9,8 +9,8 @@ public class FacebookUserDetails extends SocialUserDetails {
     }
 
     @Override
-    public String getEmail() {
-        return this.getAttributeAsString("email");
+    public String getSubject() {
+        return this.getAttributeAsString("id");
     }
 
     @Override

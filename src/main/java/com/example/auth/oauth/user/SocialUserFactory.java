@@ -17,6 +17,8 @@ public class SocialUserFactory {
         SocialUserDetails socialUserDetails = null;
         if(SocialOAuthProvider.FACEBOOK.name().equalsIgnoreCase(registrationId)){
             socialUserDetails = new FacebookUserDetails(attributes);
+        }else if(SocialOAuthProvider.GOOGLE.name().equalsIgnoreCase(registrationId)){
+            socialUserDetails = new GoogleUserDetails(attributes);
         }else{
             throw new RuntimeException(String.format("Unsupported Registration ID:{}", registrationId));
         }
@@ -25,15 +27,8 @@ public class SocialUserFactory {
 
     public static SocialUserDetails getSocialUser(Account account) {
         log.debug("getSocialUser:account:{}", account);
-        SocialUserDetails socialUserDetails = null;
         String registrationId = account.getProvider().name();
         Map<String, Object> attributes = objectMapper.convertValue(account, Map.class);
-        if(SocialOAuthProvider.FACEBOOK.name().equalsIgnoreCase(registrationId)){
-            socialUserDetails = new FacebookUserDetails(attributes);
-        }else{
-            throw new RuntimeException(String.format("Unsupported Registration ID:{}", registrationId));
-        }
-        return socialUserDetails;
+        return getSocialUser(registrationId, attributes);
     }
-
 }

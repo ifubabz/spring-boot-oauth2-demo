@@ -36,6 +36,7 @@ public class JwtTokenService {
         Date expirationTime = Date.from(nowTime.plusSeconds(60*60*24*30));
 
         JWTClaimsSet jwtClaims = new JWTClaimsSet.Builder()
+                .claim("subject", socialUserDetails.getSubject())
                 .claim("name", socialUserDetails.getUsername())
                 .claim("email", socialUserDetails.getEmail())
                 .issuer("example")

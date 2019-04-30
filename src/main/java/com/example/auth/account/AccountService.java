@@ -1,8 +1,8 @@
 package com.example.auth.account;
 
-import com.example.auth.oauth.user.SocialUserDetails;
 import com.example.auth.oauth.user.SocialUserFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +17,9 @@ public class AccountService implements UserDetailsService {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -34,16 +37,16 @@ public class AccountService implements UserDetailsService {
         return userDetails;
     }
 
-    public SocialUserDetails getUserByEmail(String email) {
+    public AccountDto.Response getUserByEmail(String email) {
         log.debug("getUserByEmail:email:{}", email);
         Optional<Account> accountOptional = accountRepository.findByEmail(email);
-        SocialUserDetails userDetails = null;
+        AccountDto.Response accountDto = null;
         if(accountOptional.isPresent()){
             Account account = accountOptional.get();
             log.debug("getUserByEmail:Account:{}", account);
-            userDetails = SocialUserFactory.getSocialUser(account);
+            accountDto = modelMapper.map(account, AccountDto.Response.class);
         }
-        log.debug("getUserByEmail:UserDetails:{}", userDetails);
-        return userDetails;
+        log.debug("getUserByEmail:Response:{}", accountDto);
+        return accountDto;
     }
 }
