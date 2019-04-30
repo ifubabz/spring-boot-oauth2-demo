@@ -1,18 +1,17 @@
-package com.example.auth.oauth;
+package com.example.auth.oauth.user;
 
 import lombok.ToString;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collections;
 import java.util.Map;
 
 @ToString
-public abstract class SocialUserDetails extends User implements OAuth2User {
+public abstract class SocialUserDetails extends User implements SocialUser {
 
     protected Map<String, Object> attributes;
-    protected static final String NAME_ATTR_KEY = "email";
+    protected static final String NAME_ATTR_KEY = "name";
 
     protected SocialUserDetails(Map<String, Object> attributes){
         this(attributes, NAME_ATTR_KEY);
@@ -30,11 +29,11 @@ public abstract class SocialUserDetails extends User implements OAuth2User {
 
     @Override
     public String getName() {
-        return getAttribute(NAME_ATTR_KEY);
+        return getAttributeAsString(NAME_ATTR_KEY);
     }
 
-    protected String getAttribute(String name){
-        return String.valueOf(this.attributes.get(name));
+    protected String getAttributeAsString(String name){
+        return String.valueOf(this.attributes.getOrDefault(name, ""));
     }
 
 }

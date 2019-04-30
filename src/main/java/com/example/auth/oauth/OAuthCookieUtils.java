@@ -65,7 +65,6 @@ public class OAuthCookieUtils {
     public static void addCookie(HttpServletResponse response, String name, String value){
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
-        cookie.setHttpOnly(true);
         cookie.setMaxAge(COOKIE_MAX_AGE);
         response.addCookie(cookie);
     }

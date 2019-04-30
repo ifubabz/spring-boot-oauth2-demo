@@ -39,104 +39,43 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     AccountService accountService;
 
     @Override
-    protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder
-                .userDetailsService(accountService)
-                .passwordEncoder(passwordEncoder());
-    }
-
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors()
+            .cors()
                 .and()
-                .sessionManagement()
+            .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .csrf()
+            .csrf()
                 .disable()
-                .formLogin()
+            .httpBasic()
                 .disable()
-                .httpBasic()
+            .formLogin()
                 .disable()
-                .exceptionHandling()
+            .authorizeRequests()
+                .antMatchers("/", "login/**")
+                    .permitAll()
+                .anyRequest()
+                    .authenticated()
+                .and()
+            .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint())
                 .and()
-                .authorizeRequests()
-                .antMatchers("/",
-                        "/error",
-                        "/favicon.ico",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js")
-                .permitAll()
-                .antMatchers("/login/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .oauth2Login()
+            .oauth2Login()
                 .authorizationEndpoint()
-                .baseUri("/login/oauth")
-                .authorizationRequestRepository(authorizationRequestRepository())
-                .and()
+                    .baseUri("/login/oauth")
+                    .authorizationRequestRepository(authorizationRequestRepository())
+                    .and()
                 .redirectionEndpoint()
-                .baseUri("/login/callback/*")
-                .and()
+                    .baseUri("/login/callback/*")
+                    .and()
                 .userInfoEndpoint()
-                .userService(socialOAuth2UserService)
-                .and()
+                    .userService(socialOAuth2UserService)
+                    .and()
                 .successHandler(authenticationSuccessHandler())
-                .failureHandler(authenticationFailureHandler());
-
-        // Add our custom Token based authentication filter
+                .failureHandler(authenticationFailureHandler())
+            ;
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-//        http.cors()
-//                .and()
-//            .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//            .csrf()
-//                .disable()
-//            .httpBasic()
-//                .disable()
-//            .formLogin()
-//                .disable()
-//            .authorizeRequests()
-//                .antMatchers("/", "login/**")
-//                    .permitAll()
-//                .anyRequest()
-//                    .authenticated()
-//                .and()
-//            .exceptionHandling()
-//                .authenticationEntryPoint(authenticationEntryPoint())
-//                .and()
-//            .oauth2Login()
-//                .authorizationEndpoint()
-//                    .baseUri("/login/oauth")
-//                    .authorizationRequestRepository(authorizationRequestRepository())
-//                    .and()
-//                .redirectionEndpoint()
-//                    .baseUri("/login/callback/*")
-//                    .and()
-//                .userInfoEndpoint()
-//                    .userService(socialOAuth2UserService)
-//                    .and()
-//                .successHandler(authenticationSuccessHandler())
-//                .failureHandler(authenticationFailureHandler())
-//            ;
-//        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

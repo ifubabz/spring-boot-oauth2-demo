@@ -2,11 +2,10 @@ package com.example.auth.oauth;
 
 import com.example.auth.account.Account;
 import com.example.auth.account.AccountRepository;
+import com.example.auth.oauth.user.SocialUserDetails;
 import com.example.auth.oauth.user.SocialUserFactory;
-import jdk.nashorn.internal.runtime.options.Option;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -32,24 +31,28 @@ public class SocialOAuth2UserService extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         SocialOAuthProvider provider = SocialOAuthProvider.valueOf(registrationId.toUpperCase(Locale.ENGLISH));
         Map<String, Object> attributes = oAuth2User.getAttributes();
-
+        log.debug("loadUser:attributes:{}", attributes);
         SocialUserDetails socialUserDetails = SocialUserFactory.getSocialUser(registrationId, attributes);
-        Optional<Account> accountOptional = accountRepository.findByEmail(socialUserDetails.getUsername());
-
+        log.debug("loadUser:socialUserDetails:{}", socialUserDetails);
+        Optional<Account> accountOptional = accountRepository.findByEmail(socialUserDetails.getEmail());
+        log.debug("loadUser:accountOptional:{}", accountOptional);
         Account account = null;
         if(accountOptional.isPresent()){
             account = accountOptional.get();
-            account.setName(socialUserDetails.getName());
+            account.setName(socialUserDetails.getUsername());
             account.setProvider(provider);
+            account.setImageUrl(socialUserDetails.getImageUrl());
         }else{
-            account = new Account();
-            account.setName(socialUserDetails.getName());
-            account.setEmail(socialUserDetails.getName());
-            account.setProvider(provider);
+            account = Account.builder()
+                    .name(socialUserDetails.getUsername())
+                    .email(socialUserDetails.getEmail())
+                    .provider(provider)
+                    .imageUrl(socialUserDetails.getImageUrl())
+                    .build();
         }
+        log.debug("loadUser:Account:{}", account);
         accountRepository.save(account);
-
-        log.debug("socialUser:{}", socialUserDetails);
+        log.debug("loadUser:socialUser:{}", socialUserDetails);
         return socialUserDetails;
     }
 }

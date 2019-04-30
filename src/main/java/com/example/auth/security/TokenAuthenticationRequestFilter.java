@@ -34,10 +34,10 @@ public class TokenAuthenticationRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.debug("doFilterInternal:{}", request);
         String authorization = request.getHeader("Authorization");
-        log.debug("doFilterInternal:Authorization:{}", authorization);
+        log.debug("doFilterInternal:Authorization:{}", authorization!=null);
         if(StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")){
             String bearerToken = authorization.substring(7);
-            log.debug("doFilterInternal:bearerToken:{}", bearerToken);
+            log.debug("doFilterInternal:bearerToken:existed");
             String email = jwtTokenService.getEmail(bearerToken);
             log.debug("doFilterInternal:email:{}", email);
             UserDetails userDetails = accountService.loadUserByUsername(email);

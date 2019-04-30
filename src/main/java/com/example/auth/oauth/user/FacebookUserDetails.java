@@ -1,7 +1,5 @@
 package com.example.auth.oauth.user;
 
-import com.example.auth.oauth.SocialUserDetails;
-
 import java.util.Map;
 
 public class FacebookUserDetails extends SocialUserDetails {
@@ -10,5 +8,25 @@ public class FacebookUserDetails extends SocialUserDetails {
         super(attributes);
     }
 
+    @Override
+    public String getEmail() {
+        return this.getAttributeAsString("email");
+    }
 
+    @Override
+    public String getImageUrl() {
+        if(attributes.containsKey("imageUrl")){
+            return this.getAttributeAsString("imageUrl");
+        }
+        if(attributes.containsKey("picture")) {
+            Map<String, Object> pictureObj = (Map<String, Object>) attributes.get("picture");
+            if(pictureObj.containsKey("data")) {
+                Map<String, Object>  dataObj = (Map<String, Object>) pictureObj.get("data");
+                if(dataObj.containsKey("url")) {
+                    return (String) dataObj.get("url");
+                }
+            }
+        }
+        return null;
+    }
 }

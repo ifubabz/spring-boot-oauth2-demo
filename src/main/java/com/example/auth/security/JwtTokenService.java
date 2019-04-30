@@ -1,6 +1,6 @@
 package com.example.auth.security;
 
-import com.example.auth.oauth.SocialUserDetails;
+import com.example.auth.oauth.user.SocialUserDetails;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -14,7 +14,6 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -37,7 +36,8 @@ public class JwtTokenService {
         Date expirationTime = Date.from(nowTime.plusSeconds(60*60*24*30));
 
         JWTClaimsSet jwtClaims = new JWTClaimsSet.Builder()
-                .claim("email", socialUserDetails.getName())
+                .claim("name", socialUserDetails.getUsername())
+                .claim("email", socialUserDetails.getEmail())
                 .issuer("example")
                 .issueTime(issueTime)
                 .expirationTime(expirationTime)

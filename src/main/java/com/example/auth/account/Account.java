@@ -1,6 +1,9 @@
 package com.example.auth.account;
 
 import com.example.auth.oauth.SocialOAuthProvider;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,7 +23,8 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
-@Getter @Setter @NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter @Setter @EqualsAndHashCode(of="id")
 @ToString
 public class Account {
 
@@ -38,4 +42,14 @@ public class Account {
     @NotNull
     @Enumerated(EnumType.STRING)
     private SocialOAuthProvider provider;
+
+    private String imageUrl;
+
+    @Builder
+    public Account(String name, String email, SocialOAuthProvider provider, String imageUrl){
+        this.name = name;
+        this.email = email;
+        this.provider = provider;
+        this.imageUrl = imageUrl;
+    }
 }
